@@ -9,16 +9,15 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  String? email; // เก็บอีเมลของผู้ใช้
+  String? email;
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    getUserEmail(); // ดึงข้อมูลอีเมลของผู้ใช้ที่ล็อกอิน
+    getUserEmail();
   }
 
-  // ดึงอีเมลของผู้ใช้จาก Firebase
   Future<void> getUserEmail() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -26,15 +25,12 @@ class _ProfileState extends State<Profile> {
         setState(() {
           email = user.email;
         });
-      } else {
-        print('No user is logged in');
       }
     } catch (error) {
       print('Error getting user email: $error');
     }
   }
 
-  // ฟังก์ชัน Log Out
   Future<void> signOutUser() async {
     setState(() {
       _isLoading = true;
@@ -45,11 +41,10 @@ class _ProfileState extends State<Profile> {
       setState(() {
         email = null;
       });
-
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Logged out successfully')),
       );
-      Navigator.pushReplacementNamed(context, 'home'); // กลับไปหน้า Login
+      Navigator.pushReplacementNamed(context, 'home');
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to log out: $error')),
@@ -64,59 +59,100 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text('Profile',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
-        backgroundColor: Colors.blue,
-      ),
       body: Stack(
         children: [
-          // รูปพื้นหลัง
           Positioned.fill(
             child: Image.asset(
-              'assets/image/10.jpg',
-              fit: BoxFit.cover, // ทำให้รูปเต็มจอ
+              'assets/image/aom5.jpg',
+              fit: BoxFit.cover,
             ),
           ),
-
-          // แสดงข้อมูลโปรไฟล์
-          email == null
-              ? const Center(child: CircularProgressIndicator()) // โหลดข้อมูล
-              : Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundImage: const AssetImage('assets/image/fa.png'), // รูปโปรไฟล์
-                        ),
-                        const SizedBox(height: 16),
-
-                        // กล่องข้อความโปร่งแสงแสดงอีเมล
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.8), // โปร่งแสง
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            'Email: $email',
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-
-                        const SizedBox(height: 24),
-                        ElevatedButton(
-                          onPressed: _isLoading ? null : signOutUser,
-                          child: _isLoading
-                              ? const CircularProgressIndicator()
-                              : const Text('Log Out'),
-                        ),
-                      ],
+          // ปุ่ม "ย้อนกลับ" ที่เพิ่มนอก AppBar
+          Positioned(
+            top: 40,
+            left: 20,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                Navigator.pop(context); // การย้อนกลับ
+              },
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(25),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 10,
+                      spreadRadius: 2,
                     ),
-                  ),
+                  ],
                 ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Profile',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.white,
+                      child: CircleAvatar(
+                        radius: 55,
+                        backgroundImage: AssetImage('assets/image/fa.png'),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      email != null ? 'Email: $email' : 'Loading...',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    ElevatedButton(
+                      onPressed: _isLoading ? null : signOutUser,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                      child: _isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : const Text(
+                              'Log Out',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

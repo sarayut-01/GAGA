@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -10,23 +10,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late VideoPlayerController _controller;
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool isMusicPlaying = false;
 
   @override
   void initState() {
     super.initState();
-
-    // กำหนดค่าวิดีโอ
-    _controller = VideoPlayerController.asset('assets/video/sample.mp4')
-      ..initialize().then((_) {
-        setState(() {});
-        _controller.setLooping(true);
-        _controller.play();
-      });
-
-    // เล่นเพลงพื้นหลัง และตั้งค่าให้เล่นซ้ำเมื่อจบ
     _audioPlayer.onPlayerComplete.listen((event) {
       _playBackgroundMusic();
     });
@@ -55,7 +44,6 @@ class _HomeState extends State<Home> {
 
   @override
   void dispose() {
-    _controller.dispose();
     _audioPlayer.stop();
     _audioPlayer.dispose();
     super.dispose();
@@ -65,50 +53,71 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text("Sarayut@TRAIPOB",style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+        title: Text(
+          "Sarayut@TRAIPOB",
+          style: GoogleFonts.lobster(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blueAccent.shade700,
+        elevation: 10,
         actions: [
           IconButton(
-            icon: Icon(isMusicPlaying ? Icons.pause : Icons.play_arrow),
+            icon: Icon(
+              isMusicPlaying ? Icons.pause_circle_filled : Icons.play_circle_fill,
+              size: 32,
+              color: Colors.white,
+            ),
             onPressed: isMusicPlaying ? _stopBackgroundMusic : _playBackgroundMusic,
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          // วิดีโอพื้นหลัง
-          Positioned.fill(
-            child: _controller.value.isInitialized
-                ? VideoPlayer(_controller)
-                : const Center(child: CircularProgressIndicator()),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/image/weaom.jpg'),
+            fit: BoxFit.cover,
           ),
-
-          // เนื้อหาตรงกลาง
-          Center(
-            child: Column(
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Spacer(),
+            Text(
+              "Welcome",
+              style: GoogleFonts.pacifico(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+            const SizedBox(height: 20),
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // รูปภาพตรงกลาง
-                Image.asset(
-                  'assets/image/123.png',
-                  width: 200,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, 'login');
-                  },
-                  child: const Text('Login'),
-                ),
+                _buildButton(context, 'Login', Colors.blueAccent, 'login'),
+                const SizedBox(width: 20),
+                _buildButton(context, 'Test', Colors.greenAccent, 'test'),
               ],
             ),
-          ),
-        ],
+            const Spacer(),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildButton(BuildContext context, String text, Color color, String route) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.pushNamed(context, route);
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 40.0),
+        textStyle: GoogleFonts.roboto(fontSize: 18, fontWeight: FontWeight.bold),
+        backgroundColor: color,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        elevation: 8,
+        shadowColor: Colors.black45,
+      ),
+      child: Text(text),
     );
   }
 }

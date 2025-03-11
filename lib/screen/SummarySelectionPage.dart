@@ -28,7 +28,7 @@ class SummarySelectionPage extends StatelessWidget {
         height: double.infinity, // Ensure the container takes up the full height
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/image/000.png'), // Replace with your image path
+            image: AssetImage('assets/image/aom6.jpg'), // Replace with your image path
             fit: BoxFit.cover, // Ensures the image fills the screen
           ),
         ),

@@ -46,7 +46,9 @@ class _DailySummaryPageState extends State<DailySummaryPage> {
          centerTitle: true,
   backgroundColor: Colors.blue,
       ),
+      
       body: StreamBuilder<QuerySnapshot>(
+        
         stream: getTransactionsByDay(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

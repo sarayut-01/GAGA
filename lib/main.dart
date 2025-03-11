@@ -8,7 +8,10 @@ import 'package:ggh/constant/constant.dart';
 import 'package:ggh/firebase_options.dart';
 import 'package:ggh/screen/Fill_in_information.dart';
 import 'package:ggh/screen/SummarySelectionPage.dart';
+import 'package:ggh/screen/api.dart';
 import 'package:ggh/screen/dashboard.dart';
+import 'package:ggh/screen/game.dart';
+import 'package:ggh/screen/gamebutton.dart';
 import 'package:ggh/screen/home.dart';
 import 'package:ggh/screen/login.dart';
 import 'package:ggh/screen/profile.dart';
@@ -49,6 +52,10 @@ class Myapp extends StatelessWidget {
         // 'update': (context) => UpdateUser(userId: '2'),
         'AddTransactionPage': (context) => AddTransactionPage(),
         'SummarySelectionPage': (context) => SummarySelectionPage(),
+        'API' : (context) => Api(),
+        'GAMEBUTTON' : (context) => Gamebutton(),
+        'test' : (context) => Dashboard(),
+        'GAME' : (context) => GameScreen(),
       },
     );
   }

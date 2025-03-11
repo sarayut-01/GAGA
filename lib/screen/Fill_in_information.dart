@@ -66,7 +66,9 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/image/eeeeee.jpg',
+              'assets/image/aom4.jpg',
+              // width: 500,
+              // height: 200,
               fit: BoxFit.cover,
             ),
           ),

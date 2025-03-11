@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ggh/constant/constant.dart';
-import 'package:video_player/video_player.dart';
-
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -17,26 +15,6 @@ class _LoginState extends State<Login> {
   final _password = TextEditingController();
   bool _isLoading = false;
 
-  late VideoPlayerController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = VideoPlayerController.asset(
-        'assets/videos/B.MP4') // ปรับให้ path ถูกต้อง
-      ..initialize().then((_) {
-        setState(() {});
-        _controller.setLooping(true);
-        _controller.play();
-      });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   Future<void> loginUser() async {
     final String email = _email.text;
     final String password = _password.text;
@@ -46,14 +24,14 @@ class _LoginState extends State<Login> {
         _isLoading = true;
       });
 
-      // Firebase Authentication สำหรับการล็อกอิน
+      // Firebase Authentication
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
       if (userCredential.user != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login Successful!')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Login Successful!')));
         Navigator.pushNamed(context, 'dashboard'); // ไปยังหน้าหลัก
       }
     } on FirebaseAuthException catch (e) {
@@ -64,9 +42,9 @@ class _LoginState extends State<Login> {
         message = 'Wrong password provided for that user.';
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     } finally {
       setState(() {
         _isLoading = false;
@@ -76,98 +54,115 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    final size =
-        MediaQuery.of(context).size; // ใช้ MediaQuery เพื่อกำหนดขนาดของ widget
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Login',
-          style: TextStyle(
-            fontSize: pFont,
-            color: Colors.black,
-          ),
+          style: TextStyle(fontSize: pFont, color: Colors.black),
         ),
         centerTitle: true,
-        backgroundColor:Colors.blue,
+        backgroundColor: Colors.blue,
       ),
       body: Stack(
-        
         children: [
-          
-            Image.asset('assets/image/fa.png'),
-          _controller.value.isInitialized
-              ? SizedBox.expand(
-                  child: FittedBox(
-                    fit: BoxFit.cover,
-                    child: SizedBox(
-                      width: _controller.value.size.width,
-                      height: _controller.value.size.height,
-                      child: VideoPlayer(_controller),
-                    ),
-                  ),
-                )
-              : Container(color: const Color.fromARGB(255, 255, 255, 255)),
+          // พื้นหลังเป็นรูปภาพ
+          Positioned.fill(
+            child: Image.asset("assets/image/meaom.jpg", fit: BoxFit.cover),
+          ),
+
+          // ทำให้พื้นหลังมืดลง
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.3), // ปรับความเข้มของพื้นหลัง
+            ),
+          ),
+
           // ฟอร์มล็อกอิน
           Center(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                      controller: _email,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        fillColor: Colors.white,
-                        filled: true,
-                        prefixIcon: Icon(Icons.email, color: Colors.grey),
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        return null;
-                      },
+              child: Card(
+                elevation: 8, // Adding shadow
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16), // Rounded corners
+                ),
+                color: Colors.blueGrey.withOpacity(0.3), // Set the opacity here
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextFormField(
+                          controller: _email,
+                          decoration: const InputDecoration(
+                            labelText: 'Email',
+                            fillColor: Color.fromARGB(255, 144, 144, 145),
+                            filled: true,
+                            prefixIcon: Icon(Icons.email, color: Color.fromARGB(255, 255, 254, 254)),
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 12.0,
+                              horizontal: 10.0,
+                            ),
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your email';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _password,
+                          decoration: const InputDecoration(
+                            labelText: 'Password',
+                            fillColor:Color.fromARGB(255, 167, 171, 169),
+                            filled: true,
+                            prefixIcon: Icon(Icons.lock, color: Color.fromARGB(255, 251, 251, 251)),
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 12.0,
+                              horizontal: 10.0,
+                            ),
+                          ),
+                          obscureText: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your password';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 30),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
+                          onPressed: _isLoading ? null : loginUser,
+                          child:
+                              _isLoading
+                                  ? const CircularProgressIndicator()
+                                  : const Text('Login',style: TextStyle(color: Colors.black,),
+                        ),),
+                        const SizedBox(height: 20),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, 'register');
+                          },
+                          child: const Text(
+                            'Don\'t have an account? Register here',
+                            style: TextStyle(
+                              fontSize: 16, // Increased font size
+                              color: Color.fromARGB(255, 14, 14, 15), // Set the color to blue
+                              fontWeight: FontWeight.bold, // Bold text
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _password,
-                      decoration: const InputDecoration(
-                        labelText: 'Password',
-                        fillColor: Colors.white,
-                        filled: true,
-                        prefixIcon: Icon(Icons.lock, color: Colors.grey),
-                        border: OutlineInputBorder(),
-                      ),
-                      obscureText: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 30),
-                    ElevatedButton(
-                      onPressed: _isLoading ? null : loginUser,
-                      child: _isLoading
-                          ? const CircularProgressIndicator()
-                          : const Text('Login'),
-                    ),
-                    const SizedBox(height: 20),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context,
-                            'register'); // แก้คำว่า registor เป็น register
-                      },
-                      child:
-                          const Text('Don\'t have an account? Register here'),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),

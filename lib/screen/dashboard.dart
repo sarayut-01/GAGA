@@ -10,6 +10,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   User? _user;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -17,7 +18,6 @@ class _DashboardState extends State<Dashboard> {
     _getCurrentUser();
   }
 
-  // ฟังก์ชันดึงข้อมูลผู้ใช้จาก Firebase
   Future<void> _getCurrentUser() async {
     User? currentUser = FirebaseAuth.instance.currentUser;
     setState(() {
@@ -28,159 +28,145 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text("Dashboard"
-        ,style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),)),
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-        ),
-        actions: [
-          // แสดงอีเมลของผู้ใช้ในมุมขวาบน
-          _user == null
-              ? const CircularProgressIndicator() // แสดงการโหลดหากยังไม่ได้ดึงข้อมูลผู้ใช้
-              : Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    _user!.email ?? 'No Email', // แสดงอีเมลผู้ใช้หากมี
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: () {
-              Navigator.pushNamed(context, 'profile');
-            },
-          ),
-        ],
-        backgroundColor: Colors.blue,
-      ),
+      key: _scaffoldKey,
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 100, 184, 253),
+            UserAccountsDrawerHeader(
+              accountName: Text(_user?.displayName ?? "Guest", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              accountEmail: Text(_user?.email ?? "No Email", style: TextStyle(color: Colors.white)),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.person,
+                  color: Colors.blue,
+                  size: 40,
+                ),
               ),
-              child: Text(
-                'Menu',
-                style: TextStyle(
-                  color: Color.fromARGB(255, 0, 0, 0),
-                  fontSize: 24,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blueAccent, Colors.lightBlue],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                 ),
               ),
             ),
-            ListTile(
-              leading: const Icon(Icons.add),
-              title: const Text('AddTransactionPage'),
-              onTap: () {
-                Navigator.pushNamed(context, 'AddTransactionPage');
-              },
-            ),
-            // ListTile(
-            //   leading: const Icon(Icons.home),
-            //   title: const Text('Home'),
-            //   onTap: () {
-            //     Navigator.pushNamed(context, 'dashboard');
-            //   },
-            // ),
-            ListTile(
-              leading: const Icon(Icons.summarize),
-              title: const Text('สรุปผล'),
-              onTap: () {
-                Navigator.pushNamed(context, 'SummarySelectionPage');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.account_circle),
-              title: const Text('Profile'),
-              onTap: () {
-                Navigator.pushNamed(context, 'profile');
-              },
+            Expanded(
+              child: ListView(
+                children: [
+                  _buildDrawerItem(Icons.add, 'Add Transaction', 'AddTransactionPage'),
+                  _buildDrawerItem(Icons.api, 'API', 'API'),
+                  _buildDrawerItem(Icons.videogame_asset, 'Game', 'GAMEBUTTON'),
+                  _buildDrawerItem(Icons.summarize, 'Summary', 'SummarySelectionPage'),
+                  _buildDrawerItem(Icons.account_circle, 'Profile', 'profile'),
+                ],
+              ),
             ),
           ],
         ),
       ),
       body: Stack(
         children: [
-          // พื้นหลังเป็นรูปภาพ
           Positioned.fill(
-            child: SizedBox(
-              width: 10,
-              height: 20,
-              child: Image.asset(
-                "assets/image/111.png",
+            child: Image.asset("assets/image/aom8.jpg", fit: BoxFit.cover),
+          ),
+          Positioned.fill(
+            child: Container(color: Colors.black.withOpacity(0.4)),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 40, left: 16, right: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.menu, color: Colors.white),
+                    onPressed: () {
+                      _scaffoldKey.currentState?.openDrawer();
+                    },
+                  ),
+                  _user == null
+                      ? const CircularProgressIndicator()
+                      : Text(
+                          _user!.email ?? 'No Email',
+                          style: const TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                  IconButton(
+                    icon: const Icon(Icons.account_circle, color: Colors.white),
+                    onPressed: () {
+                      Navigator.pushNamed(context, 'profile');
+                    },
+                  ),
+                ],
               ),
             ),
           ),
-
-          // ทำให้พื้นหลังมืดลง เพื่อให้ตัวอักษรอ่านง่ายขึ้น
-          Positioned.fill(
-            child: Container(
-              color: Colors.black.withOpacity(0.3), // ปรับความเข้มของพื้นหลัง
-            ),
-          ),
-
-          // เนื้อหาหลัก
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: 5000,
-                  height: 200,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, 'profile');
-                  },
-                  child: const Text('Go to Profile'),
-                ),
-              ],
-            ),
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  height: 100,
-                  width: 500,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, 'SummarySelectionPage');
-                  },
-                  child: const Text('สรุปผล'),
-                ),
-              ],
-            ),
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  height: 5,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, 'AddTransactionPage');
-                  },
-                  child: const Text('AddTransactionPage'),
-                ),
-              ],
+          // ปุ่มใหม่ที่จัดตำแหน่งใหม่
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _buildNewStyledButton('Go to Profile', Colors.blueAccent, 'profile'),
+                  SizedBox(height: 20),
+                  _buildNewStyledButton('สรุปผล', Colors.greenAccent, 'SummarySelectionPage'),
+                  SizedBox(height: 20),
+                  _buildNewStyledButton('Add Transaction', Colors.purpleAccent, 'AddTransactionPage'),
+                ],
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDrawerItem(IconData icon, String title, String route) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.blueAccent),
+      title: Text(
+        title,
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+      onTap: () {
+        Navigator.pushNamed(context, route);
+      },
+    );
+  }
+
+  Widget _buildNewStyledButton(String text, Color color, String route) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, route);
+      },
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 18.0),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(50.0), // ทำขอบมนให้ดูทันสมัย
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.5),
+              blurRadius: 12.0,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 18.0,
+            letterSpacing: 1.2, // เพิ่มช่องว่างระหว่างตัวอักษร
+          ),
+        ),
       ),
     );
   }
