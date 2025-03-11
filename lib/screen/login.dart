@@ -55,16 +55,10 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Login',
-          style: TextStyle(fontSize: pFont, color: Colors.black),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.blue,
-      ),
+     
       body: Stack(
         children: [
+         
           // พื้นหลังเป็นรูปภาพ
           Positioned.fill(
             child: Image.asset("assets/image/meaom.jpg", fit: BoxFit.cover),
@@ -165,6 +159,16 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
+            ),
+          ),
+           Positioned(
+            top: 40,
+            left: 20,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                Navigator.pop(context); // การย้อนกลับ
+              },
             ),
           ),
         ],

@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Sarayut@TRAIPOB",
+          "Sarayut@Traipob",
           style: GoogleFonts.lobster(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
         ),
         backgroundColor: Colors.blueAccent.shade700,

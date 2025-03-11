@@ -53,130 +53,134 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Add Transaction',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true, // ทำให้หัวข้ออยู่ตรงกลาง
-        backgroundColor: Colors.blue, // เปลี่ยนสี AppBar เป็นฟ้า
-        foregroundColor: const Color.fromARGB(255, 0, 0, 0), // เปลี่ยนสีตัวหนังสือเป็นขาว
-      ),
       body: Stack(
         children: [
+         
           Positioned.fill(
             child: Image.asset(
               'assets/image/aom4.jpg',
-              // width: 500,
-              // height: 200,
               fit: BoxFit.cover,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  DropdownButtonFormField<String>(
-                    value: _transactionType,
-                    items: const [
-                      DropdownMenuItem(value: 'income', child: Text('Income')),
-                      DropdownMenuItem(value: 'expense', child: Text('Expense')),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        _transactionType = value!;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Transaction Type',
-                      
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white, // เพิ่มพื้นหลังสีขาว
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Amount',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.blue, width: 2),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.blueAccent, width: 2),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.deepPurple, width: 2),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      prefixIcon: const Icon(Icons.attach_money, color: Colors.green),
-                    ),
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter an amount';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _amount = double.tryParse(value!) ?? 0.0;
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Note',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.blue, width: 2),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.blueAccent, width: 2),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Colors.deepPurple, width: 2),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      prefixIcon: const Icon(Icons.note, color: Colors.orange),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a note';
-                      }
-                      return null;
-                    },
-                    onSaved: (value) {
-                      _note = value!;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+          Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      DropdownButtonFormField<String>(
+                        value: _transactionType,
+                        items: const [
+                          DropdownMenuItem(value: 'income', child: Text('Income')),
+                          DropdownMenuItem(value: 'expense', child: Text('Expense')),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _transactionType = value!;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Transaction Type',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
                         ),
-                        backgroundColor: Colors.deepPurple,
                       ),
-                      onPressed: _saveTransaction,
-                      child: const Text('Save Transaction', style: TextStyle(fontSize: 16, color: Colors.white)),
-                    ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Amount',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: Colors.blue, width: 2),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: Colors.blueAccent, width: 2),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: Colors.deepPurple, width: 2),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          prefixIcon: const Icon(Icons.attach_money, color: Colors.green),
+                        ),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter an amount';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _amount = double.tryParse(value!) ?? 0.0;
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Note',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: Colors.blue, width: 2),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: Colors.blueAccent, width: 2),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(color: Colors.deepPurple, width: 2),
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          prefixIcon: const Icon(Icons.note, color: Colors.orange),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a note';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) {
+                          _note = value!;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            backgroundColor: Colors.deepPurple,
+                          ),
+                          onPressed: _saveTransaction,
+                          child: const Text('Save Transaction', style: TextStyle(fontSize: 16, color: Colors.white)),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
+            ),
+          ),
+           Positioned(
+            top: 40,
+            left: 20,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                Navigator.pop(context); // Go back action
+              },
             ),
           ),
         ],

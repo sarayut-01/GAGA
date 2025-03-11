@@ -81,55 +81,73 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Level $currentLevel"), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GridView.builder(
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemCount: 9,
-              itemBuilder: (context, index) {
-                bool shouldBlink =
-                    currentBlinkIndex >= 0 &&
-                    currentBlinkIndex < blinkSequence.length &&
-                    index == blinkSequence[currentBlinkIndex];
-                bool isSelected = playerSequence.contains(index);
-                return GestureDetector(
-                  onTap: () => handlePlayerTap(index),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    decoration: BoxDecoration(
-                      color:
-                          shouldBlink
-                              ? Colors.blueAccent
-                              : isSelected
-                              ? Colors.green
-                              : Colors.grey.shade300,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow:
-                          shouldBlink || isSelected
-                              ? [
-                                BoxShadow(color: Colors.black26, blurRadius: 5),
-                              ]
-                              : [],
+      appBar: AppBar(
+        title: Text("Level $currentLevel"),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/image/aom10.jpg'), // Add your image here
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                ),
+                itemCount: 9,
+                itemBuilder: (context, index) {
+                  bool shouldBlink =
+                      currentBlinkIndex >= 0 &&
+                      currentBlinkIndex < blinkSequence.length &&
+                      index == blinkSequence[currentBlinkIndex];
+                  bool isSelected = playerSequence.contains(index);
+                  return GestureDetector(
+                    onTap: () => handlePlayerTap(index),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      decoration: BoxDecoration(
+                        color:
+                            shouldBlink
+                                ? Colors.blueAccent
+                                : isSelected
+                                ? Colors.green
+                                : Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow:
+                            shouldBlink || isSelected
+                                ? [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 5,
+                                  ),
+                                ]
+                                : [],
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            Text(
-              isPlayerTurn ? "ตาผู้เล่น" : "Watch Closely...",
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ],
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              Text(
+                isPlayerTurn ? "ตาผู้เล่น" : "Watch Closely...",
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
